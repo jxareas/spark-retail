@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="#">
-    <img src="assets/tools_apache_spark.svg" alt="Apache Spark" height="200">
+    <img src="assets/logos/tools_apache_spark.svg" alt="Apache Spark" height="200">
   </a>
 
 <h1 align = "center">
