@@ -6,7 +6,7 @@
   </a>
 
 <h1 align = "center">
-<b><i>Spark Retail Group Project</i></b>
+<b><i>Spark Data Analysis Practice</i></b>
 </h1>
 </div>
 
