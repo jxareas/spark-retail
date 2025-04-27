@@ -12,6 +12,7 @@
 # </div>
 # 
 # [Apache Spark]: https://spark.apache.org
+# [PySpark]: https://spark.apache.org/docs/latest/api/python/index.html
 
 # ## Descripción de la tarea
 
@@ -41,12 +42,13 @@
 
 # Primeramente, importamos las librerías necesarias para ejecutar nuestro código, principalmente aquellas relacionadas con la API de PySpark.
 
-# In[2]:
+# In[1]:
 
 
 # Importing libraries
 
 from pyspark.sql import SparkSession
+import pyspark.sql.functions as F
 
 
 # Luego, inicializamos una sesión de Spark utilizando la API de PySpark. La función `SparkSession.builder` se usa para configurar y crear una nueva instancia de Spark.
@@ -55,7 +57,7 @@ from pyspark.sql import SparkSession
 # 
 # Esta sesión de Spark será el punto de entrada para trabajar con los datos y ejecutar las operaciones de análisis de datos.
 
-# In[35]:
+# In[22]:
 
 
 spark = (
@@ -64,10 +66,12 @@ spark = (
     .getOrCreate()
 )
 
+spark
+
 
 # ## Cargando la data
 
-# In[4]:
+# In[3]:
 
 
 # Setting parameters, data file paths
@@ -80,13 +84,13 @@ purchases_df = spark.read.json(PURCHASES_DATA_PATH)
 stock_df = spark.read.csv(STOCKS_DATA_PATH, header=True, inferSchema=True)
 
 
-# In[5]:
+# In[4]:
 
 
 purchases_df.show(5)
 
 
-# In[6]:
+# In[5]:
 
 
 stock_df.show(5)
@@ -100,11 +104,17 @@ stock_df.show(5)
 
 # #### Spark DataFrame:
 
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # #### SQL:
 # 
 # Primeramente, debemos crear una vista temporal:
 
-# In[7]:
+# In[6]:
 
 
 purchases_df.createOrReplaceTempView("purchases")
@@ -112,7 +122,7 @@ purchases_df.createOrReplaceTempView("purchases")
 
 # Una vez hecho esto, ejecutamos la consulta en SQL nativo:
 
-# In[8]:
+# In[7]:
 
 
 spark.sql("""
@@ -128,9 +138,15 @@ spark.sql("""
 
 # #### Spark DataFrame:
 
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # #### SQL:
 
-# In[9]:
+# In[8]:
 
 
 spark.sql("""
@@ -146,9 +162,15 @@ spark.sql("""
 
 # #### Spark DataFrame:
 
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # #### Spark SQL Nativo:
 
-# In[30]:
+# In[9]:
 
 
 spark.sql("""
@@ -189,9 +211,15 @@ spark.sql("""
 
 # #### Spark DataFrame:
 
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # #### Spark SQL Nativo:
 
-# In[33]:
+# In[10]:
 
 
 spark.sql("""
@@ -214,16 +242,145 @@ spark.sql("""
 """).show()
 
 
+# 
 # ### 5. Indicar la tienda que ha vendido más productos.
+
+# #### Spark DataFrame:
+
+# In[13]:
+
+
+(
+    purchases_df.groupBy("shop_id")
+    .count()
+    .orderBy(F.col("count").desc())
+    .limit(1)
+    .show()
+)
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
 
 # ### 6. Indicar la tienda que ha facturado más dinero.
 
+# #### Spark DataFrame:
+
+# In[14]:
+
+
+(
+    purchases_df.groupBy("shop_id")
+    .agg(F.sum("price").alias("revenue"))
+    .orderBy(F.col("revenue").desc())
+    .limit(1)
+    .show()
+)
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # ### 7. Dividir el mundo en 5 áreas geográficas iguales según la longitud (location.lon) y agregar una columna con el nombre del área geográfica (Area1: - 180 a - 108, Area2: - 108 a - 36, Area3: - 36 a 36, Area4: 36 a 108, Area5: 108 a 180), ...
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
 
 # #### 7.1. ¿En qué área se utiliza más PayPal?
 
+# #### Spark DataFrame:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # #### 7.2. ¿Cuáles son los 3 productos más comprados en cada área?
+
+# #### Spark DataFrame:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
 
 # #### 7.3. ¿Qué área ha facturado menos dinero?
 
+# #### Spark DataFrame:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
+
 # ### 8. Indicar los productos que no tienen stock suficiente para las compras realizadas.
+
+# #### Spark DataFrame:
+
+# In[21]:
+
+
+purchases_count_df = (
+    purchases_df
+    .groupBy("product_id")
+    .count()
+    .withColumnRenamed("count", "purchases_made")
+)
+
+insufficient_stock_df = (
+    stock_df
+    .join(purchases_count_df, "product_id")
+    .filter(F.col("quantity") < F.col("purchases_made"))
+    .withColumnRenamed("quantity", "quantity_in_stock")
+)
+
+insufficient_stock_df.show()
+
+
+# #### Spark SQL Nativo:
+
+# In[ ]:
+
+
+## TODO : Solve this using Spark
+
